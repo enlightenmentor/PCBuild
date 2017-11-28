@@ -20,7 +20,8 @@ body {
 }
 input[type='text'],
 input[type='email'],
-input[type='password'] {
+input[type='password'],
+textarea {
   padding: 8px;
   border: 1px lightgray solid;
   border-radius: 2px;

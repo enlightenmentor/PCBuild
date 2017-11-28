@@ -12,20 +12,29 @@ firebase.initializeApp({
 
 export default {
   checkUser() {
-    return localStorage.getItem('user') || null;
+    return new Promise((resolve, reject) => {
+      firebase.auth().onAuthStateChanged((user) => {
+        user.getIdToken(true).then((idToken) => {
+          resolve(user ? {
+            email: user.email,
+            token: idToken
+          } : null);
+        });
+      })
+    });
   },
   signIn(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
       .then((user) => {
-        localStorage.setItem('user', user.email);
-        return user.email;
+        user.getIdToken(true).then((idToken) => {
+          return {
+            email: user.email,
+            token: idToken
+          };
+        });
       });
   },
   signOut() {
-    return firebase.auth().signOut()
-      .then(() => {
-        localStorage.removeItem('user');
-        return null;
-      });
+    return firebase.auth().signOut();
   }
 }
